@@ -1,0 +1,92 @@
+--------------------------
+title: "PA_1template.Rmd"
+output: html_document
+--------------------------
+
+##This is the ProgramAssignment1's RMarkDown
+
+- Firstly, you must downloaded the file activity.csv to the same Directory of your RMarkdown File. 
+
+- Load the data. 
+```{r loading, echo=TRUE}
+  Activity<-read.csv("activity.csv")
+```
+
+- An Initial analisys of the  data structure
+```{r InitAnalysis, echo=TRUE}
+  str(Activity)
+  names(Activity)
+  head(Activity)
+```
+
+- Getting only the valid Lines (ignoring the missing values)
+```{r IgnoreMissing, echo=TRUE}
+ ValidActivity<-Activity[!is.na(Activity$steps),]
+```
+- Grouping the total steps per day
+```{r totalstepsperday, echo=TRUE}   
+   totalstepsperday<-tapply(ValidActivity$steps,ValidActivity$date,sum)   
+```
+
+- Looking at the data structure
+```{r echo=TRUE}
+  str(totalstepsperday)
+  names(totalstepsperday)
+  head(totalstepsperday)
+```
+
+- I don't know why, but there are some results equals to NA. Anyway, I can ignore it and obtain the total of steps per day without NAs
+```{r echo=TRUE}
+   totalstepsperday<-totalstepsperday[!is.na(totalstepsperday)]
+   totalstepsperday
+```
+
+- Plotting a histogram of the data
+```{r histogram, echo=TRUE}
+hist(totalstepsperday, breaks=ceiling(1+3.32*log(dim(totalstepsperday))), col="blue",labels=TRUE,main="Frequency of number of steps per day")
+```
+
+- Obtaining the mean of steps per day
+```{r meanstepsperday, echo=TRUE}
+ meanofstepsperday<-mean(totalstepsperday)
+ meanofstepsperday
+```
+
+- Obtaining the median value of the values observed for steps per day
+```{r medianstepsperday, echo=TRUE}
+  medianofstepsperday<-median(totalstepsperday)
+  medianofstepsperday
+```
+
+- Grouping the average number of steps per interval
+```{r totalperinterval, echo=TRUE}
+  stepsperinterval<-tapply(ValidActivity$steps,ValidActivity$interval,mean)
+```
+
+- Looking at the data structure
+```{r echo=TRUE}
+  str(stepsperinterval)
+  head(stepsperinterval)
+```
+
+- Plotting a single graphic of Number of steps by Intervals
+```{r plotstepsperinterval,echo=TRUE}
+   plot(row.names(stepsperinterval), stepsperinterval,xlab="Label of the Intervals (5 minutes each)", ylab="Number of steps",main="Mean number of steps by intervals", type="l")
+```
+
+- Obtaining the interval with maximum mean value of number of steps
+```{r maxintervalmean, echo=TRUE}
+   x<-0
+   largest<-0
+   for (i in 1:dim(stepsperinterval)){
+     if (stepsperinterval[i]>largest){
+       largest<-stepsperinterval[i]
+       x <- i
+     }
+   }
+   print("Order of the Interval:")
+   print(i)
+   print("Label of the Interval:")
+   names(stepsperinterval[x])
+```
+
